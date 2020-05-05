@@ -1,0 +1,71 @@
+---
+title: "Aufgabenzettel 03"
+author: "Gruppe01"
+date: "5/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Aufgabe 07 Deskriptive Statistik
+
+```{r Aufgabe 07}
+load("../data/yingtan_20_ueb3.RData", envir = parent.frame(), verbose = FALSE)
+```
+
+a) Wenden Sie die Methode summary auf die austauschbaren Ca-Ionen an und erläutern Sie kurz die mit dieser Funktion gewonnenen Parameter.
+
+```{r 7a - Summary Ca-Ionen}
+summary(ljz$Ca_exch)
+```
+Die summary()-Funktion stellt wesentliche Lageparameter einer Datenreihe dar. Rstudio zeigt Min, Max, 25%-Quantil, 75%-Quantil, sowie den Meadian und den Mittelwert an. 
+
+b)  Ermitteln Sie wiederum für die austauschbaren Ca-Ionen die Streuungsparameter Varianz und Standardabweichung sowie die zentralen Momente Schiefe und Kurtosis (bezogen auf NV mit kurtosis = 0)
+
+```{r psych}
+# load library ''psych'' for SD, skew, kurtosis and others
+library(psych)
+psych::describe(ljz$Ca_exch)
+```
+
+Die für den Datensatz ermittelte Standardabweichung liegt bei 11,13 µmol/g um den Mittelwert. Das zentrale Moment Schiefe liegt bei 1,5 und die Kurtosis liegt bei 5,55. Da der Befehl describe keine Angaben zur Varianz liefert, wird diese Funktion durch var() ausgeführt.
+
+```{r Varianz}
+var(ljz$Ca_exch)
+```
+Die für den Datensatz ermittelte Varianz liegt bei 123,85 µmol/g.
+
+# Aufgabe 08 Dichte-Histogramme und Box-Whisker-Plots in R
+Variablen lassen sich nicht nur numerisch in ihrem Werteraum beschreiben, sondern auch auf graphischem Wege. 
+
+a) Erstellen Sie ein Dichte-Histogramm für die austauschbaren Ca-Ionen. Achten Sie dabei auf aussagekräftige Klassenweiten. Ändern Sie Titel und Achsenbeschriftungen sinnvoll ab und färben Sie die Balken grau ein. 
+
+```{r Histogram}
+# hist= Histogramm für (data)
+# breaks = Klassenverteilung, main=Histogrammtitel, Y/xlab=Achsenbeschriftung
+# las=Beschriftung drehen
+hist(ljz$Ca_exch, ylim=c(0, 150), 
+     breaks=seq(from=0, to=100, by=10), 
+     main="Dichtehistogramm Ca-Ionen", 
+     ylab="Häufigkeit", xlab="Ca-Ionen", 
+     las=1, col="gray")
+
+```
+
+b) Um welche Verteilung handelt es sich bei der Ca-Ionenkonzentration dem visuellen Eindruck nach? Setzen Sie ihre Vermutung in Bezug zu den in Aufgabe 7b. errechneten Formparametern.
+
+Dem ersten, optischen Eindruck nach, handelt es sich bei der Ca-Ionenkonzentration um eine rechtsschiefe Verteilung, da die höchte Eintragshäufigkeit zwischen den Werten 0 und 40 liegt und der sich der höchste Punkt der Kurve in der linken Graphenhälfte befindet.Bei genauerer Betrachung der Formparameter wird ersichtlich, dass es sich bei der Funktion um eine rechtsschiefe Verteilung handeln muss, da der Median kleiner als das arithmetische Mittel ist (siehe 7b).
+
+c) Erstellen Sie nun für die austauschbaren Ca-Ionen einen Box-Whisker-Plot und untersuchen Sie das Randverhalten der Verteilung. Geben Sie mögliche Ausreißer in ihrem Protokoll an (range = 1,5). Vergeben Sie auch hier einen sinnvollen Titel sowie passende Achsenbeschriftungen. Verkleinern Sie die Balkenbreite, um eine ansprechende Grafik zu erzeugen.
+
+```{r Box-Whisker-Plot}
+boxplot((ljz$Ca_exch), 
+        main="Boxplot der Ca-Ionen", 
+        ylab="Ca-Ionen", col="gray")
+```
+
+Der Box-Whisker-Plot zeigt schließlich, dass insbesondere vier einzelne Werte aus der Verteilung herausfallen (94.311, 71.707, 58.034, 53.743)
+. 
+                
