@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 # Aufgabe 07 Deskriptive Statistik
 
 ```{r Aufgabe 07}
@@ -30,14 +31,16 @@ library(psych)
 psych::describe(ljz$Ca_exch)
 ```
 
-Die für den Datensatz ermittelte Standardabweichung liegt bei 11,13 µmol/g um den Mittelwert. Das zentrale Moment Schiefe liegt bei 1,5 und die Kurtosis liegt bei 5,55. Da der Befehl describe keine Angaben zur Varianz liefert, wird diese Funktion durch var() ausgeführt.
+Die für den Datensatz ermittelte Standardabweichung liegt bei 11,13 µmol/g um den Mittelwert. Das zentrale Moment Schiefe liegt bei 1,5 und die Kurtosis liegt bei 5,55. Da der Befehl describe keine Angaben zur Varianz liefert, wird dieser Parameter durch die Funktion var() berechnet.
 
 ```{r Varianz}
 var(ljz$Ca_exch)
 ```
 Die für den Datensatz ermittelte Varianz liegt bei 123,85 µmol/g.
 
+
 # Aufgabe 08 Dichte-Histogramme und Box-Whisker-Plots in R
+
 Variablen lassen sich nicht nur numerisch in ihrem Werteraum beschreiben, sondern auch auf graphischem Wege. 
 
 a) Erstellen Sie ein Dichte-Histogramm für die austauschbaren Ca-Ionen. Achten Sie dabei auf aussagekräftige Klassenweiten. Ändern Sie Titel und Achsenbeschriftungen sinnvoll ab und färben Sie die Balken grau ein. 
@@ -63,9 +66,43 @@ c) Erstellen Sie nun für die austauschbaren Ca-Ionen einen Box-Whisker-Plot und
 ```{r Box-Whisker-Plot}
 boxplot((ljz$Ca_exch), 
         main="Boxplot der Ca-Ionen", 
-        ylab="Ca-Ionen", col="gray")
+        ylab="Ca-Ionen", col="gray",
+        pars = list(boxwex = 0.3, staplewex = 0.5, outwex = 0.5), range = 1.5)
 ```
 
-Der Box-Whisker-Plot zeigt schließlich, dass insbesondere vier einzelne Werte aus der Verteilung herausfallen (94.311, 71.707, 58.034, 53.743)
-. 
-                
+Der Box-Whisker-Plot zeigt schließlich, dass insbesondere vier einzelne Werte aus der Verteilung herausfallen (94.311, 71.707, 58.034, 53.743), da sie den Grenzwert von Range = 1.5 überschreiten. Die Range gibt hierbei an, wie weit die Whisker zum entferntesten Datenpunkt, der nicht weiter als range = x des Interquartilbereichs entfernt ist, reichen.
+
+
+# Aufgabe 09 Plotten in R
+
+Erstellen Sie jeweils einen ansehnlichen Box-Whisker-Plot mit den Mitteln der 'base graphics' (boxplot), lattice (bwplot) und ggplot2 (geom_boxplot). In jeder dieser Abbildungen stellen Sie im Prinzip das gleiche dar, nämlich die austauschbaren Ca-Ionen für drei unterschiedliche Datensätze: regular, catA und catQ. Das heißt, Sie müssen den ursprünglichen Datensatz vorab entsprechend reduzieren.
+
+```{r installieren fehlender Packages}
+install.packages("lattice")
+install.packages("ggplot2")
+```
+
+
+
+```{r neue Tabelle mit regular, catA und catQ}
+#einfügen von package 'dplyr', neue Tabelle erstellen, 'filtern' nach Spalte SAMPLING mit den Eigenschaften regular, catA und catQ
+#mit 'select' die jeweiligen Paramter abfragen
+library(dplyr)
+ljzmod <- ljz %>%
+        dplyr::filter(SAMPLING == "regular" | SAMPLING == "catA" | SAMPLING == "catQ") %>%
+        dplyr::select(SAMPLING, Ca_exch)
+```
+
+
+```{r}
+regular <- ljzmod$Ca_exch[ljzmod$SAMPLING == "regular"]
+catA <- ljzmod$Ca_exch[ljzmod$SAMPLING == "catA"]
+catQ <- ljzmod$Ca_exch[ljzmod$SAMPLING == "catQ"]
+boxplot(regular, catA, catQ, col="gray", ylab="Ca-Ionen", main="Boxplots der Ca-Ionen", names=c("regular", "catA", "catQ"))
+
+```
+
+```{r laden fehlender Packages in die Arbeitsumgebung}
+library(lattice)
+library(ggplot2)
+```
